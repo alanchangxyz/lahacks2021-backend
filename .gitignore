@@ -23,3 +23,6 @@ pids
 
 # Production
 /build
+
+# Packages
+node_modules/
