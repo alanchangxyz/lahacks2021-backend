@@ -17,9 +17,7 @@ accountsRouter.post('/checkin', async (req, res) => {
     try {
         // get the user profile from spotify api;
         const { token } = req.body;
-        let validToken = false;
-        let data;
-        data = await axios({
+        const data = await axios({
             method: 'get',
             url: `https://api.spotify.com/v1/me`,
             headers: { 
@@ -27,14 +25,12 @@ accountsRouter.post('/checkin', async (req, res) => {
             },
         })
           .then((response) => {
-            // console.log(response.data);
             return response.data;
           })
           .catch((err) => {
             return null;
           });
         if (data) {
-          console.log(data);
           let userExists = await pool.query(`SELECT * from users WHERE user_id = '${data.id}'`);
           userExists = userExists.rows.length !== 0;
           if (userExists) {
@@ -43,19 +39,44 @@ accountsRouter.post('/checkin', async (req, res) => {
             await pool.query(`INSERT INTO users VALUES ('${data.id}', '${data.display_name}', '${data.images[0].url}', NOW())`)
           }
           //  TODO: add a row to the checkin table corresponding to that user and their last played 
-          res.send(data);
+          
+          const recentlyPlayed = await axios({
+            method: 'get',
+            url: `https://api.spotify.com/v1/me/player/recently-played?limit=10`,
+            headers: { 
+                'Authorization': `Bearer ${token}`
+            },
+          })
+            .then((response) => {
+              return response.data.items.filter(track => track.type !== "ad");
+            })
+            .catch((err) => {
+              return null;
+            });
+          const lastPlayed = recentlyPlayed[0];
+          const recentCheckins = await pool.query(`SELECT * from checkins WHERE user_id = '${data.id}' and NOW() - interval '15 minutes' < checkin_time`);
+          if (recentCheckins.rows.length == 0 && recentlyPlayed) {
+            await pool.query(`INSERT INTO checkins(user_id, song_id, context_type, context_href, checkin_time, checkin_token) VALUES ('${data.id}', '${lastPlayed.track.id}', ${lastPlayed.context ? "'" + lastPlayed.context.type + "'" : 'null'}, ${lastPlayed.context ? "'" + lastPlayed.context.href + "'" : 'null'}, NOW(), '${token}')`);
+          }
+          recentlyPlayed.forEach(async (song) => {
+            let songExists = await pool.query(`SELECT * from songs WHERE song_id = '${song.track.id}'`);
+            if (songExists.rows.length === 0) {
+              await pool.query(`INSERT INTO songs VALUES ('${song.track.id}', '${song.track.name}', '${song.track.artists[0].name}', '${song.track.href}', '${song.track.album.images[0].url}')`);
+            }
+            let historyExists = await pool.query(`SELECT * from history WHERE song_id = '${song.track.id}' AND TIMESTAMP '${song.played_at.replace('T', ' ').replace('Z', '')}' - interval '10 minutes' > time_stamp`);
+            if (historyExists.rows.length === 0) {
+              // console.log(song.track.name);
+              // console.log(`INSERT INTO history VALUES ('${data.id}', '${song.track.id}', TIMESTAMP '${song.played_at.replace('T', ' ').replace('Z', '')}'`);
+              await pool.query(`INSERT INTO history VALUES ('${data.id}', '${song.track.id}', TIMESTAMP '${song.played_at.replace('T', ' ').replace('Z', '')}')`);
+              console.log(song.track.name);
+            }
+          });
+          res.send(true);
         } else {
-          res.status(400).send(false);
-        }
-        
-        
-
-        // example of querying db
-        // const allUsers = await pool.query('SELECT * FROM users');
-        // res.send(allUsers.rows);
-        
+          res.send(false);
+        }        
     } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send(false);
     }
   });
 
