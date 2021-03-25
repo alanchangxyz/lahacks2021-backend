@@ -22,8 +22,6 @@ CREATE TABLE checkins
 	user_id VARCHAR(100) NOT NULL,
 	song_id VARCHAR(100) NOT NULL,
 	context_type VARCHAR(10),
-	context_name VARCHAR(100),
-	context_desc VARCHAR(500),
 	context_href VARCHAR(100),
 	checkin_time TIMESTAMP,
     checkin_token VARCHAR(200),
@@ -59,6 +57,13 @@ CREATE TABLE friend_reqs (
 		ON DELETE CASCADE,
 	CONSTRAINT uid2 
 		FOREIGN KEY (user_id2)
+		
+CREATE TABLE history (
+	user_id VARCHAR(100) NOT NULL,
+	song_id VARCHAR(100) NOT NULL,
+	time_stamp TIMESTAMP,
+	CONSTRAINT uid
+		FOREIGN KEY (user_id)
 		REFERENCES users (user_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
