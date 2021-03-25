@@ -9,6 +9,7 @@ require('dotenv').config();
 // routes
 const audioRouter = require('./routes/audio/audio');
 const accountsRouter = require('./routes/users/auth');
+const songRouter = require('./routes/users/songs');
 
 const app = express();
 const port = 3001;
@@ -30,6 +31,7 @@ app.use(cors({
 
 app.use('/audio', audioRouter);
 app.use('/auth', accountsRouter);
+app.use('/song', songRouter)
 
 app.listen(port, () => {
   console.log(`App listening at ${reactAppHost}:${port}`);

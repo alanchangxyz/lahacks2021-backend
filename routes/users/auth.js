@@ -24,6 +24,16 @@ accountsRouter.post('/checkin', async (req, res) => {
         // example of querying db
         const allUsers = await pool.query('SELECT * FROM users');
         res.send(allUsers.rows);
+
+        // const user = {
+        //     "user_id": req.body.id,
+        //     "disp_name": req.body.display_name,
+        //     "img_url": req.body.img,
+        //     "last_checked_in": Date.now()
+        // }
+
+        // const userId = await pool.query();
+
         
     } catch (err) {
         res.status(400).send(err.message);
