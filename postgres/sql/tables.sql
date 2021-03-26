@@ -2,7 +2,7 @@ CREATE TABLE users
 (
     user_id VARCHAR(100) NOT NULL,
     disp_name VARCHAR(50) NOT NULL,
-	img_url VARCHAR(100),
+	img_url VARCHAR(200),
 	last_checked_in TIMESTAMP,
 	PRIMARY KEY (user_id)
 );
