@@ -6,7 +6,7 @@ const pool = require('../../postgres/config');
 
 profileRouter.use(express.json());
 
-profileRouter.get('/', async (req, res) => {
+profileRouter.post('/', async (req, res) => {
     try {
         const profile = await pool.query(`SELECT users.user_id, users.disp_name, users.pfp, checkins.song_id, songs.song_name, songs.song_artist, songs.img_url FROM
         checkins INNER JOIN users ON users.user_id = checkins.user_id 
