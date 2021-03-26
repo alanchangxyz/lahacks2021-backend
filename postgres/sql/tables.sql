@@ -45,7 +45,7 @@ CREATE TABLE friends (
 		REFERENCES users (user_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
-)
+);
 
 CREATE TABLE friend_reqs (
 	user_id1 VARCHAR(100) NOT NULL,
@@ -57,7 +57,11 @@ CREATE TABLE friend_reqs (
 		ON DELETE CASCADE,
 	CONSTRAINT uid2 
 		FOREIGN KEY (user_id2)
-		
+		REFERENCES users (user_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
 CREATE TABLE history (
 	user_id VARCHAR(100) NOT NULL,
 	song_id VARCHAR(100) NOT NULL,
