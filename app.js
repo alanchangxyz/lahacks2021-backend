@@ -9,6 +9,7 @@ require('dotenv').config();
 // routes
 const accountsRouter = require('./routes/users/auth');
 const songRouter = require('./routes/users/songs');
+const friendRequestsRouter = require('./routes/users/friendrequests');
 const profileRouter = require('./routes/users/profile');
 
 const app = express();
@@ -31,6 +32,7 @@ app.use(cors({
 
 app.use('/auth', accountsRouter);
 app.use('/songs', songRouter);
+app.use('/friends/requests', friendRequestsRouter);
 app.use('/profile', profileRouter);
 
 app.listen(port, () => {
