@@ -30,14 +30,16 @@ accountsRouter.post('/checkin', async (req, res) => {
           .catch((err) => {
             return null;
           });
+        
         if (data) {
           let userExists = await pool.query(`SELECT * from users WHERE user_id = '${data.id}'`);
           userExists = userExists.rows.length !== 0;
           if (userExists) {
-            await pool.query(`UPDATE users SET last_checked_in = NOW() WHERE user_id = '${data.id}'`)
+            await pool.query(`UPDATE users SET last_checked_in = NOW() WHERE user_id = '${data.id}';`)
           } else {
-            await pool.query(`INSERT INTO users VALUES ('${data.id}', '${data.display_name}', '${data.images[0].url}', NOW())`)
+            await pool.query(`INSERT INTO users VALUES ('${data.id}', '${data.display_name}', '${data.images[0].url}', NOW());`)
           }
+
           //  TODO: add a row to the checkin table corresponding to that user and their last played 
           
           const recentlyPlayed = await axios({

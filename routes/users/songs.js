@@ -63,10 +63,6 @@ songsRouter.post('/features', async (req, res) => {
           .catch((err) => {
             res.status(400).send(err.message);
           });
-
-        // example of querying db
-        // const allSongs = await pool.query('SELECT * FROM songs');
-        // res.send(allSongs.rows);
         
     } catch (err) {
         res.status(400).send(err.message);
