@@ -9,11 +9,8 @@ require('dotenv').config();
 // routes
 const accountsRouter = require('./routes/users/auth');
 const songRouter = require('./routes/users/songs');
-<<<<<<< HEAD
 const friendRequestsRouter = require('./routes/users/friendrequests');
-=======
 const profileRouter = require('./routes/users/profile');
->>>>>>> user-profile
 
 const app = express();
 const port = 3001;
