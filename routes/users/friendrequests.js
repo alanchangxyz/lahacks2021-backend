@@ -10,7 +10,14 @@ friendRequestsRouter.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const friendRequests = await pool.query(`SELECT * FROM friend_reqs WHERE user_id2 = '${id}'`);
-        res.send(friendRequests.rows);        
+        const getUserInfo = async (f) => {
+            let friendInfo = await pool.query(`SELECT * from users WHERE user_id = '${f.user_id1}'`);
+            // console.log(friendInfo.rows);
+            return friendInfo.rows[0];
+        }
+        const friends = await Promise.all(friendRequests.rows.map(async (f) => await getUserInfo(f)));
+        console.log(friends);
+        res.send(friends);        
     } catch(err) {
         res.status(400).send(err.message);
     }
