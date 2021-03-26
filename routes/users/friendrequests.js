@@ -28,11 +28,21 @@ friendRequestsRouter.post('/', async (req, res) => {
                 }
             }
         }
-        
+    } catch(err) {
+        res.status(400).send(err.message);
+    }
+});
+
+friendRequestsRouter.post('/handle', (req, res) => {
+    try {
+        const { user1, user2, action } = req.body;
+        // make sure friend req exists
+        // accept or reject based on action
         
     } catch(err) {
         res.status(400).send(err.message);
     }
 });
+
 
 module.exports = friendRequestsRouter;
