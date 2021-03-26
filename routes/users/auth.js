@@ -57,6 +57,8 @@ accountsRouter.post('/checkin', async (req, res) => {
           const recentCheckins = await pool.query(`SELECT * from checkins WHERE user_id = '${data.id}' and NOW() - interval '15 minutes' < checkin_time`);
           if (recentCheckins.rows.length == 0 && recentlyPlayed) {
             await pool.query(`INSERT INTO checkins(user_id, song_id, context_type, context_href, checkin_time, checkin_token) VALUES ('${data.id}', '${lastPlayed.track.id}', ${lastPlayed.context ? "'" + lastPlayed.context.type + "'" : 'null'}, ${lastPlayed.context ? "'" + lastPlayed.context.href + "'" : 'null'}, NOW(), '${token}')`);
+          } else {
+            await pool.query(`UPDATE checkins SET checkin_token = '${token}' WHERE user_id = '${data.id}' and NOW() - interval '15 minutes' < checkin_time`);
           }
           recentlyPlayed.forEach(async (song) => {
             let songExists = await pool.query(`SELECT * from songs WHERE song_id = '${song.track.id}'`);
