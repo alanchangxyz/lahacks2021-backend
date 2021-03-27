@@ -12,11 +12,9 @@ friendRequestsRouter.get('/:id', async (req, res) => {
         const friendRequests = await pool.query(`SELECT * FROM friend_reqs WHERE user_id2 = '${id}'`);
         const getUserInfo = async (f) => {
             let friendInfo = await pool.query(`SELECT * from users WHERE user_id = '${f.user_id1}'`);
-            // console.log(friendInfo.rows);
             return friendInfo.rows[0];
         }
         const friends = await Promise.all(friendRequests.rows.map(async (f) => await getUserInfo(f)));
-        console.log(friends);
         res.send(friends);        
     } catch(err) {
         res.status(400).send(err.message);
@@ -50,12 +48,25 @@ friendRequestsRouter.post('/', async (req, res) => {
     }
 });
 
-friendRequestsRouter.post('/handle', (req, res) => {
+friendRequestsRouter.post('/handle', async (req, res) => {
     try {
         const { user1, user2, action } = req.body;
         // make sure friend req exists
         // accept or reject based on action
-        
+        if (action === 'accept') {
+            const reqFound = await pool.query(`SELECT * FROM friend_reqs WHERE user_id1 = '${user1}' AND user_id2 = '${user2}'`);
+            if (reqFound.rows.length > 0) {
+                await pool.query(`DELETE FROM friend_reqs WHERE user_id1 = '${user1}' AND user_id2 = '${user2}'`);
+                await pool.query(`INSERT INTO friends VALUES ('${user1}', '${user2}')`);
+                res.send('Friend added!');
+            }
+        } else if (action === 'reject') {
+            const reqFound = await pool.query(`SELECT * FROM friend_reqs WHERE user_id1 = '${user1}' AND user_id2 = '${user2}'`);
+            if (reqFound.rows.length > 0) {
+                await pool.query(`DELETE FROM friend_reqs WHERE user_id1 = '${user1}' AND user_id2 = '${user2}'`);
+                res.send('Friend request rejected!');
+            }
+        }
     } catch(err) {
         res.status(400).send(err.message);
     }
