@@ -57,7 +57,7 @@ friendRequestsRouter.post('/handle', async (req, res) => {
             const reqFound = await pool.query(`SELECT * FROM friend_reqs WHERE user_id1 = '${user1}' AND user_id2 = '${user2}'`);
             if (reqFound.rows.length > 0) {
                 await pool.query(`DELETE FROM friend_reqs WHERE user_id1 = '${user1}' AND user_id2 = '${user2}'`);
-                await pool.query(`INSERT INTO friends VALUES ('${user1}', '${user2}')`);
+                await pool.query(`INSERT INTO friends VALUES ('${user1}', '${user2}'), ('${user2}', '${user1}')`);
                 res.send('Friend added!');
             }
         } else if (action === 'reject') {
