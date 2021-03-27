@@ -72,7 +72,6 @@ accountsRouter.post('/checkin', async (req, res) => {
               // console.log(song.track.name);
               // console.log(`INSERT INTO history VALUES ('${data.id}', '${song.track.id}', TIMESTAMP '${song.played_at.replace('T', ' ').replace('Z', '')}'`);
               await pool.query(`INSERT INTO history VALUES ('${data.id}', '${song.track.id}', TIMESTAMP '${song.played_at.replace('T', ' ').replace('Z', '')}')`);
-              console.log(song.track.name);
             }
           });
           res.send(true);
