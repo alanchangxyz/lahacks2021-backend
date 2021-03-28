@@ -26,3 +26,8 @@ pids
 
 # Packages
 node_modules/
+
+# virtual environment
+env
+.vscode
+model/__pycache__
