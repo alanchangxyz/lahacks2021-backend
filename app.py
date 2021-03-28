@@ -22,7 +22,7 @@ def get_model_pred():
             return result["0"]
         except Exception as e:
             print(e)
-            return "Error converting to csv", 400
+            return "Error getting prediction", 400
     else:
         return "Request body must be a JSON object"
 

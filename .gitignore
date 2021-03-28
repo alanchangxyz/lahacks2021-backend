@@ -26,6 +26,7 @@ pids
 
 # Packages
 node_modules/
+node_modules
 
 # virtual environment
 env
