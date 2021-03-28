@@ -31,3 +31,6 @@ node_modules/
 env
 .vscode
 model/__pycache__
+
+# pycache for ml model
+/__pycache__
