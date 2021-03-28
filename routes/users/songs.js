@@ -65,21 +65,13 @@ songsRouter.post('/features', async (req, res) => {
                     data: song_features                    
                 })
                 .then((response2) => {
-                    // console.log(Object.values(response2.data));
-                    // console.log('nothing went wrong here');
-                    console.log(response.data);
-                    console.log(response2.data);
                     res.send(Object.values(response2.data));
-                    // console.log('nothing here either');
                 })
                 .catch((err) => {
-                    console.log('this broke');
-                    console.log(err.message);
                     res.status(400).send(err.message);
                 });
             })
           .catch((err) => {
-            console.log('this broke here');
             res.status(400).send(err.message);
           });
         

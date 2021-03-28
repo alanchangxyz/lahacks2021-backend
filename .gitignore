@@ -32,5 +32,6 @@ env
 .vscode
 model/__pycache__
 
-# pycache for ml model
+# py and temp files for ml model
 /__pycache__
+*.csv
