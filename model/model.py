@@ -30,6 +30,7 @@ songs = data.drop(['duration_ms','explicit','popularity','release_date','year','
 # drop song id, name, and artist (any any infinity and NaN values)
 features = songs.copy()
 features = features.drop(['id','name','artists'],axis=1)
+features = features.dropna()
 
 # by elbow curve, optimal clusters = 4
 kmeans = KMeans(n_clusters=4)
@@ -60,7 +61,7 @@ knn_pred = knn.predict(X_test)
 
 def prediction(song_info):
     write_to_csv(song_info)
-    song_info_df = pd.read_csv(os.path.join(os.path.dirname(__file__), "../model/song_features.csv"))
+    song_info_df = pd.read_csv(os.path.join(os.path.dirname(__file__), "song_features.csv"))
     pred = knn.predict(song_info_df)
     pred_df = pd.DataFrame(pred)
     return pred_df.to_json()
@@ -76,8 +77,8 @@ def write_to_csv(songs):
 
     for song in songs:
         result += columnDelimiter.join([str(song[feature]) for feature in features]) + lineDelimiter
-
-    with open(os.path.join(os.path.dirname(__file__), "../model/song_features.csv"), 'w') as file:
+    
+    with open(os.path.join(os.path.dirname(__file__), "song_features.csv"), 'w') as file:
         file.write(result)
 
 
